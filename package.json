@@ -5,13 +5,17 @@
   "main": "index.js",
   "scripts": {
     "update-uglify": "yarn upgrade",
-    "build-x86": "pkg --target x86 node-minify.js",
-    "build-x64": "pkg --target x64 node-minify.js",
-	"build": "pkg --target x86,x64 -o node-minify node-minify.js"
+    "build-js-x86": "pkg --target x86 node-minify.js",
+    "build-js-x64": "pkg --target x64 node-minify.js",
+	"build-css-x86": "pkg --target x86 css-minify.js",
+    "build-css-x64": "pkg --target x64 css-minify.js",
+    "build-js": "pkg --target x86,x64 node-minify.js",
+	"build-css": "pkg --target x86,x64 css-minify.js"
   },
   "author": "Tim Horemans",
   "dependencies": {
     "uglify-js": "^2.4.11",
-    "pkg": "^4.3.0"
+    "pkg": "^4.3.0",
+    "uglifycss": "^0.0.27"
   }
 }
