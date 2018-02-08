@@ -5,7 +5,7 @@
 */
 
 var UglifyJS = require("uglify-js");
-var UglifyCss = require("uglifycss");
+var UglifyCSS = require("uglifycss");
 var fs = require("fs");
 var path = require('path')
 
@@ -18,7 +18,7 @@ function ProcessJS(inFile, outFile) {
 }
 
 function ProcessCSS(inFile, outFile) {
-    var uglified = uglifycss.processFiles([inFile]);
+    var uglified = UglifyCSS.processFiles([inFile]);
     fs.writeFileSync(outFile, uglified);
 }
 
