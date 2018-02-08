@@ -6,7 +6,8 @@
   "scripts": {
     "update-uglify": "yarn upgrade",
     "build-x86": "pkg --target x86 node-minify.js",
-    "build-x64": "pkg --target x64 node-minify.js"
+    "build-x64": "pkg --target x64 node-minify.js",
+	"build": "pkg --target x86,x64 -o node-minify node-minify.js"
   },
   "author": "Tim Horemans",
   "dependencies": {
