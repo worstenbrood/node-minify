@@ -14,6 +14,9 @@ function ProcessJS(inFile, outFile) {
     ast.figure_out_scope();
     compressor = UglifyJS.Compressor();
     ast = ast.transform(compressor);
+    ast.figure_out_scope();
+    ast.compute_char_frequency();
+    ast.mangle_names();
     fs.writeFileSync(outFile, ast.print_to_string());
 }
 
