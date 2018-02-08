@@ -1,11 +1,9 @@
 /**
-    Minify javascript code using UglifyJS2
+    Minify javascript code using UglifyJS
     @see https://github.com/mishoo/UglifyJS2
-    @param {String} code - The javascript code to minify
 */
 
 var UglifyJS = require("uglify-js");
-//var program = require("commander");
 var fs = require("fs");
 
 var ast = UglifyJS.parse(fs.readFileSync(process.argv[2], "utf8"));
