@@ -1,0 +1,16 @@
+{
+  "name": "node-minify",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "update-uglify": "yarn upgrade",
+	"build-x86": "pkg --target x86 node-minify.js",
+	"build-x64": "pkg --target x64 node-minify.js"
+  },
+  "author": "Tim Horemans",
+  "dependencies": {
+    "uglify-js": "^2.4.10",
+	"pkg": "^4.3.0"
+  }
+}
