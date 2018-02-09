@@ -10,15 +10,18 @@ var fs = require("fs");
 var path = require('path')
 
 function ProcessJS(inFile, outFile) {
-    var result = UglifyJS.minify(inFile, {
+    var result = UglifyJS.minify(fs.readFileSync(inFile, "utf8"), {
         compress: {
             hoist_funs: false
         }, 
-        mangle: false
-        /*{
-            except: ["$","require","exports"],
+        mangle: false,
+		/*
+        {
+            reserved: ["$","require","exports"],
             keep_fnames: true
-        }*/
+        },
+		warnings: true
+		*/
     });
 
     fs.writeFileSync(outFile, result.code);
