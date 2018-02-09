@@ -10,14 +10,18 @@ var fs = require("fs");
 var path = require('path')
 
 function ProcessJS(inFile, outFile) {
-    var ast = UglifyJS.parse(fs.readFileSync(inFile, "utf8"));
-    ast.figure_out_scope();
-    compressor = UglifyJS.Compressor({hoist_funs: false});
-    ast = ast.transform(compressor);
-    ast.figure_out_scope();
-    ast.compute_char_frequency();
-    ast.mangle_names();
-    fs.writeFileSync(outFile, ast.print_to_string());
+    var result = UglifyJS.minify(inFile, {
+        compress: {
+            hoist_funs: false
+        }, 
+        mangle: false
+        /*{
+            except: ["$","require","exports"],
+            keep_fnames: true
+        }*/
+    });
+
+    fs.writeFileSync(outFile, result.code);
 }
 
 function ProcessCSS(inFile, outFile) {
