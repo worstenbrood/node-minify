@@ -23,6 +23,16 @@ function ProcessJS(inFile, outFile) {
 		warnings: true
     });
 
+    if (result.warnings)
+    {
+        result.warnings.forEach(function(w) {
+            process.stdout.write(w);
+            process.stdout.write("\n");
+        })
+    }
+	
+	if (result.error) throw result.error;
+	
     fs.writeFileSync(outFile, result.code);
 }
 
