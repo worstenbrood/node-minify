@@ -12,7 +12,7 @@ var path = require('path')
 function ProcessJS(inFile, outFile) {
     var ast = UglifyJS.parse(fs.readFileSync(inFile, "utf8"));
     ast.figure_out_scope();
-    compressor = UglifyJS.Compressor();
+    compressor = UglifyJS.Compressor({hoist_funs: false});
     ast = ast.transform(compressor);
     ast.figure_out_scope();
     ast.compute_char_frequency();
