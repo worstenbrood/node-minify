@@ -7,7 +7,7 @@
 var UglifyJS = require("uglify-js");
 var UglifyCSS = require("uglifycss");
 var fs = require("fs");
-var path = require('path')
+var path = require("path");
 
 function ProcessJS(inFile, outFile) {
     var result = UglifyJS.minify(fs.readFileSync(inFile, "utf8"), {
@@ -23,15 +23,16 @@ function ProcessJS(inFile, outFile) {
 		warnings: true
     });
 
-    if (result.warnings)
-    {
+    if (result.warnings) {
         result.warnings.forEach(function(w) {
             process.stdout.write(w);
             process.stdout.write("\n");
         })
     }
 	
-	if (result.error) throw result.error;
+	if (result.error) {
+		throw result.error;
+	}
 	
     fs.writeFileSync(outFile, result.code);
 }
