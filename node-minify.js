@@ -19,9 +19,8 @@ function ProcessJS(inFile, outFile) {
         {
             reserved: ["$","require","exports"],
             keep_fnames: true
-        },
+        },*/
 		warnings: true
-		*/
     });
 
     fs.writeFileSync(outFile, result.code);
