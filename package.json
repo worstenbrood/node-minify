@@ -10,8 +10,8 @@
   },
   "author": "Tim Horemans",
   "dependencies": {
-    "uglify-js": "^3.3.10",
     "pkg": "^4.3.0",
+    "uglify-js": "^3.3.11",
     "uglifycss": "^0.0.27"
   }
 }
