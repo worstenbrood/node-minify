@@ -9,6 +9,7 @@ var UglifyCSS = require("uglifycss");
 var fs = require("fs");
 var path = require("path");
 var minimist = require("minimist");
+var readline = require("readline");
 
 function enumerateFiles(directory, regex, recursive, exceptions, total) {
     total = total || [];
@@ -37,10 +38,9 @@ function toObject(arr) {
     return rv;
   }
 
-function processJSFiles(directory, outFile, exceptions) {
+function processJSFiles(inFiles, outFile) {
 
-    var files = enumerateFiles(directory, ".*\.js$", true, exceptions);
-    var result = UglifyJS.minify(toObject(files), {
+    var result = UglifyJS.minify(toObject(inFiles), {
         compress: {
             hoist_funs: false
         }, 
@@ -102,18 +102,45 @@ function processCSS(inFile, outFile) {
 
 var argv = minimist(process.argv.slice(2));
 
-if (argv["_"].length < 2)
+if (argv["_"].length < 1)
 {
     process.stderr.write("Usage: " + path.basename(process.argv[1]) + " infile outfile\n");
-    process.stderr.write("Usage: " + path.basename(process.argv[1]) + " path outfile -d [-e exceptions]\n");
+    process.stderr.write("Usage: " + path.basename(process.argv[1]) + " path outfile -d [-e exceptions] (js only)\n");
+    process.stderr.write("Usage: " + path.basename(process.argv[1]) + " outfile -p (pipe files to stdinput, js only");
     process.exit(-1);
 }
 
 if (argv["d"])
 {
+    var files = enumerateFiles(directory, ".*\.js$", true, exceptions);
     var exceptions = argv["e"]; // (ckeditor|NewUI|pivottable)
-    processJSFiles(argv["_"][0], argv["_"][1], exceptions);
+    processJSFiles(files, argv["_"][1], exceptions);
     process.exit(0);
+}
+else if (argv["p"])
+{
+    var files = [];
+    var rl = readline.createInterface({
+        input: process.stdin,
+        terminal: false
+      });
+      
+      rl.on("line", (line) => {
+        var trimmed = line.trim();
+        if (trimmed.length == 0) {
+            rl.close();
+        }
+        else {
+            files.push(trimmed);
+            rl.prompt();
+        }
+      })
+      .on("close", () => {
+        processJSFiles(files, argv["_"][0]);
+        process.exit(0);
+      });
+
+      rl.prompt();
 }
 else
 {
