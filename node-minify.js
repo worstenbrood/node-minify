@@ -112,8 +112,8 @@ if (argv["_"].length < 1)
 
 if (argv["d"])
 {
-    var files = enumerateFiles(directory, ".*\.js$", true, exceptions);
     var exceptions = argv["e"]; // (ckeditor|NewUI|pivottable)
+    var files = enumerateFiles(argv["_"][0], ".*\.js$", true, exceptions);
     processJSFiles(files, argv["_"][1], exceptions);
     process.exit(0);
 }
