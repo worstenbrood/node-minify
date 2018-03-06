@@ -8,6 +8,63 @@ var UglifyJS = require("uglify-js");
 var UglifyCSS = require("uglifycss");
 var fs = require("fs");
 var path = require("path");
+var minimist = require("minimist");
+
+function enumerateFiles(directory, regex, recursive, exceptions, total) {
+    total = total || [];
+    var result = fs.readdirSync(directory, "utf8");
+    result.forEach(element => {
+        var fullPath = path.join(directory, element);
+        var stats = fs.statSync(fullPath);
+        if (!exceptions || !element.match(exceptions)) {
+            if (stats.isDirectory() && recursive) {
+                enumerateFiles(fullPath, regex, recursive, exceptions, total);
+            } else if (stats.isFile()) {
+                if (!regex || element.match(regex)) {
+                    total.push(fullPath);
+                }
+            }
+        }
+    });
+
+    return total;
+}
+
+function toObject(arr) {
+    var rv = {};
+    for (var i = 0; i < arr.length; ++i)
+      rv[arr[i]] = fs.readFileSync(arr[i], "utf8");
+    return rv;
+  }
+
+function ProcessJSFiles(directory, outFile, exceptions) {
+
+    var files = enumerateFiles(directory, ".*\.js", true, exceptions);
+    var result = UglifyJS.minify(toObject(files), {
+        compress: {
+            hoist_funs: false
+        }, 
+        mangle: {
+            reserved: ["$","require","exports"],
+            keep_fnames: true
+        },
+		warnings: true
+    });
+
+    if (result.warnings) {
+        result.warnings.forEach(function(w) {
+            process.stdout.write(w);
+            process.stdout.write("\n");
+        })
+    }
+	
+	if (result.error) {
+        process.stderr.write(result.error);
+        process.exit(-1);
+	}
+	
+    fs.writeFileSync(outFile, result.code);
+}
 
 function ProcessJS(inFile, outFile) {
     var result = UglifyJS.minify(fs.readFileSync(inFile, "utf8"), {
@@ -31,7 +88,8 @@ function ProcessJS(inFile, outFile) {
     }
 	
 	if (result.error) {
-		throw result.error;
+        process.stderr.write(result.error);
+        process.exit(-1);
 	}
 	
     fs.writeFileSync(outFile, result.code);
@@ -42,30 +100,40 @@ function ProcessCSS(inFile, outFile) {
     fs.writeFileSync(outFile, uglified);
 }
 
-if (process.argv.length != 4)
+var argv = minimist(process.argv.slice(2));
+
+if (argv["_"].length < 2)
 {
     process.stderr.write("Usage: " + path.basename(process.argv[1]) + " infile outfile\n");
+    process.stderr.write("Usage: " + path.basename(process.argv[1]) + " path outfile -d [-e exceptions]\n");
     process.exit(-1);
 }
 
-var inFile = process.argv[2];
-var outFile = process.argv[3];
-var extension = path.extname(inFile).toLowerCase();
-
-switch(extension)
+if (argv["d"])
 {
-    case ".js":
-        ProcessJS(inFile, outFile);
-        break;
-
-    case ".css":
-        ProcessCSS(inFile, outFile);
-        break;
-
-    default:
-        process.stderr.write("Invalid extension: " + extension + "\n");
-        process.exit(-1);
-        break;
+    var exceptions = argv["e"]; // (ckeditor|NewUI|pivottable)
+    ProcessJSFiles(argv["_"][0], argv["_"][1], exceptions);
+    process.exit(0);
 }
+else
+{
+    var inFile = argv["_"][0];
+    var outFile = argv["_"][1];
+    var extension = path.extname(inFile).toLowerCase();
 
+    switch(extension)
+    {
+        case ".js":
+            ProcessJS(inFile, outFile);
+            break;
 
+        case ".css":
+            ProcessCSS(inFile, outFile);
+            break;
+
+        default:
+            process.stderr.write("Invalid extension: " + extension + "\n");
+            process.exit(-1);
+            break;
+    }
+}

@@ -12,6 +12,7 @@
   "dependencies": {
     "pkg": "^4.3.0",
     "uglify-js": "^3.3.12",
-    "uglifycss": "^0.0.28"
+    "uglifycss": "^0.0.28",
+    "minimist": "1.2.0"
   }
 }
