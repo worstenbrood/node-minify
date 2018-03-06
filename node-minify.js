@@ -39,7 +39,7 @@ function toObject(arr) {
 
 function processJSFiles(directory, outFile, exceptions) {
 
-    var files = enumerateFiles(directory, ".*\.js", true, exceptions);
+    var files = enumerateFiles(directory, ".*\.js$", true, exceptions);
     var result = UglifyJS.minify(toObject(files), {
         compress: {
             hoist_funs: false
