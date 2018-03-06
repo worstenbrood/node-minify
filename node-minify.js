@@ -59,7 +59,7 @@ function processJSFiles(directory, outFile, exceptions) {
     }
 	
 	if (result.error) {
-        process.stderr.write(result.error);
+        process.stderr.write(JSON.stringify(result.error));
         process.exit(-1);
 	}
 	
@@ -88,7 +88,7 @@ function processJS(inFile, outFile) {
     }
 	
 	if (result.error) {
-        process.stderr.write(result.error);
+        process.stderr.write(JSON.stringify(result.error));
         process.exit(-1);
 	}
 	
