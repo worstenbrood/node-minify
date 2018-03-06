@@ -37,7 +37,7 @@ function toObject(arr) {
     return rv;
   }
 
-function ProcessJSFiles(directory, outFile, exceptions) {
+function processJSFiles(directory, outFile, exceptions) {
 
     var files = enumerateFiles(directory, ".*\.js", true, exceptions);
     var result = UglifyJS.minify(toObject(files), {
@@ -66,7 +66,7 @@ function ProcessJSFiles(directory, outFile, exceptions) {
     fs.writeFileSync(outFile, result.code);
 }
 
-function ProcessJS(inFile, outFile) {
+function processJS(inFile, outFile) {
     var result = UglifyJS.minify(fs.readFileSync(inFile, "utf8"), {
         compress: {
             hoist_funs: false
@@ -95,7 +95,7 @@ function ProcessJS(inFile, outFile) {
     fs.writeFileSync(outFile, result.code);
 }
 
-function ProcessCSS(inFile, outFile) {
+function processCSS(inFile, outFile) {
     var uglified = UglifyCSS.processFiles([inFile]);
     fs.writeFileSync(outFile, uglified);
 }
@@ -112,7 +112,7 @@ if (argv["_"].length < 2)
 if (argv["d"])
 {
     var exceptions = argv["e"]; // (ckeditor|NewUI|pivottable)
-    ProcessJSFiles(argv["_"][0], argv["_"][1], exceptions);
+    processJSFiles(argv["_"][0], argv["_"][1], exceptions);
     process.exit(0);
 }
 else
@@ -124,11 +124,11 @@ else
     switch(extension)
     {
         case ".js":
-            ProcessJS(inFile, outFile);
+            processJS(inFile, outFile);
             break;
 
         case ".css":
-            ProcessCSS(inFile, outFile);
+            processCSS(inFile, outFile);
             break;
 
         default:
